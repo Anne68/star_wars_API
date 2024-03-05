@@ -1,24 +1,24 @@
 import requests
 import pandas as pd
 
-def fetch_data(url):
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        return None
+def fetch_people_data(url):
+    names = []
+    while url: #tant que l'url est valide et non null on reste dans le while
+        response = requests.get(url)
+        if response.status_code == 200: #200 équivaut à une requête réussie
+            data = response.json()
+            names.extend([i['name'] for i in data['results']]) #on ajoute à la liste names chaque valeur qui se situe dans les name(elles même situés dans results)
+            url = data['next'] #on affecte l'url qui se situe au endpoint next
+        else:
+            print(f"Erreur lors de la récupération des données: {response.status_code}")
+            break
+    return names
 
-def get_perso(url, perso_liste):
-    data = fetch_data(url)
-    if data:
-        perso_liste.extend(data['results'])
-        next_page = data['next']
-        if next_page:
-            get_perso(next_page, perso_liste)
+def create_names_df(names):
+    return pd.DataFrame(names, columns=['Name']) #creation du dataframe
 
-base_url = 'https://swapi.dev/api/people/'
-perso = []
-get_perso(base_url, perso)
 
-perso_df = pd.DataFrame(perso)
-print(perso_df)
+url = 'https://swapi.dev/api/people/'
+names = fetch_people_data(url)
+names_df = create_names_df(names)
+print(names_df)
