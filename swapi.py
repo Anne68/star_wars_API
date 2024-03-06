@@ -33,7 +33,7 @@ def get_starship(nombre):
 
 
 #fonction qui récupère tout les noms des personnages de l'API
-def get_character(url):
+def get_characters(url):
     names = []
     while url: #tant que l'url est valide et non null on reste dans le while
         response = requests.get(url)
@@ -51,7 +51,7 @@ def create_names_df(names):
     return pd.DataFrame(names, columns=['Name'])
 
 #fonction qui récupère un personnage suivant l'identifiant qu'on spécifie
-def character(nombre):
+def get_character(nombre):
     url = f'https://swapi.dev/api/people/{nombre}'
     response = requests.get(url)
     if response.status_code == 200: #200 équivaut à une requête réussie
@@ -59,5 +59,3 @@ def character(nombre):
             return response.json()
     else:
             print(f"Erreur lors de la récupération des données: {response.status_code}")
-
-        
