@@ -71,3 +71,18 @@ def character(nombre):
             return response.json()
     else:
             print(f"Erreur lors de la récupération des données: {response.status_code}")
+
+
+def interroger_api(url):
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        # Convertir la réponse JSON en un dictionnaire Python
+        data = response.json()
+        # Renvoyer les données
+        return data
+    else:
+        # Afficher un message d'erreur si la requête a échoué
+        print("La requête a échoué avec le code d'état :", response.status_code)
+        # Renvoyer None pour indiquer une absence de données en cas d'erreur
+        return None
