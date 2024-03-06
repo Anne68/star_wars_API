@@ -1,7 +1,7 @@
 import requests
 import pandas as pd
 
-def fetch_people_data(url):
+def get_character(url):
     names = []
     while url: #tant que l'url est valide et non null on reste dans le while
         response = requests.get(url)
@@ -19,6 +19,6 @@ def create_names_df(names):
 
 
 url = 'https://swapi.dev/api/people/'
-names = fetch_people_data(url)
+names = get_character(url)
 names_df = create_names_df(names)
 print(names_df)
