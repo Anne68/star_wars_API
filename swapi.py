@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 from pandas import json_normalize
 
+#récupère une planète
 def fetch_star_wars_data(nmb):
     api_url = f"https://swapi.dev/api/planets/{nmb}"
     response = requests.get(api_url)
