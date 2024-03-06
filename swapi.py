@@ -2,45 +2,55 @@ import requests
 import pandas as pd
 from pandas import json_normalize
 
-#fonction qui récupère tout les noms des personnages de l'API
-def get_character(url):
-    names = []
-    while url: #tant que l'url est valide et non null on reste dans le while
-        response = requests.get(url)
-        if response.status_code == 200: #200 équivaut à une requête réussie
-            data = response.json()
-            names.extend([i['name'] for i in data['results']]) #on ajoute à la liste names chaque valeur qui se situe dans les name(elles même situés dans results)
-            url = data['next'] #on affecte l'url qui se situe au endpoint next
-        else:
-            print(f"Erreur lors de la récupération des données: {response.status_code}")
-            break
-    return names
+def fetch_star_wars_data(nmb):
+    api_url = f"https://swapi.dev/api/planets/{nmb}"
+    response = requests.get(api_url)
 
-#fonction pour créer le dataframe de tout les personnages
-def create_names_df(names):
-    return pd.DataFrame(names, columns=['Name'])
-
-#fonction qui récupère un personnage suivant l'identifiant qu'on spécifie
-def character(nombre):
-    url = f'https://swapi.dev/api/people/{nombre}'
-    response = requests.get(url)
-    if response.status_code == 200: #200 équivaut à une requête réussie
-            print(response)
-            return response.json()
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+        print(response)
+        # Check if 'results' key exists in the data
+        return response.json()
     else:
-            print(f"Erreur lors de la récupération des données: {response.status_code}")
+        print(f"Error: Failed to fetch data. Status Code: {response.status_code}")
+        return None
 
-#affiche le dataframe de tout les noms des personnages
-url = 'https://swapi.dev/api/people/'
-names = get_character(url)
-names_df = create_names_df(names)
-print(names_df)
+if __name__ == "__main__":
+    star_wars_data = fetch_star_wars_data("2")
 
-#affiche le dataframe du personnage dont j'ai choisis l'identifiant
-response_data = character("4")
-if response_data:
-    df_character = json_normalize(response_data)
-    print("Personnage Star Wars :")
-    print(df_character)
-else:
-    print("Erreur lors de la récupération des informations.")
+    # Check if star_wars_data is not None before proceeding
+    if star_wars_data:
+        star_wars_df = json_normalize(star_wars_data)
+
+        print(star_wars_df)
+
+import requests
+import pandas as pd
+
+def fetch_planet_data():
+    api_url = "https://swapi.dev/api/planets/"
+    response = requests.get(api_url)
+
+    if response.status_code == 200:
+        data = response.json()
+        # Extracting relevant information (planet name and size) from the API response
+        planet_data = [{'Name': planet['name'], 'Size': int(planet['diameter'])} for planet in data['results']]
+        return planet_data
+    else:
+        print(f"Error: Failed to fetch data. Status Code: {response.status_code}")
+        return None
+
+def display_planet_dataframe():
+    planet_data = fetch_planet_data()
+
+    if planet_data:
+        # Creating a DataFrame from the extracted planet data
+        planet_df = pd.DataFrame(planet_data)
+        # Sorting the DataFrame by planet size in descending order
+        sorted_planet_df = planet_df.sort_values(by='Size', ascending=False)
+
+        # Displaying the sorted DataFrame
+        print(sorted_planet_df)
+
+if __name__ == "__main__":
+    display_planet_dataframe()
