@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 from pandas import json_normalize
 
+#fonction qui récupère tout les noms des personnages de l'API
 def get_character(url):
     names = []
     while url: #tant que l'url est valide et non null on reste dans le while
@@ -15,9 +16,11 @@ def get_character(url):
             break
     return names
 
+#fonction pour créer le dataframe de tout les personnages
 def create_names_df(names):
-    return pd.DataFrame(names, columns=['Name']) #creation du dataframe
+    return pd.DataFrame(names, columns=['Name'])
 
+#fonction qui récupère un personnage suivant l'identifiant qu'on spécifie
 def character(nombre):
     url = f'https://swapi.dev/api/people/{nombre}'
     response = requests.get(url)
@@ -27,11 +30,13 @@ def character(nombre):
     else:
             print(f"Erreur lors de la récupération des données: {response.status_code}")
 
+#affiche le dataframe de tout les noms des personnages
 url = 'https://swapi.dev/api/people/'
 names = get_character(url)
 names_df = create_names_df(names)
 print(names_df)
 
+#affiche le dataframe du personnage dont j'ai choisis l'identifiant
 response_data = character("4")
 if response_data:
     df_character = json_normalize(response_data)
