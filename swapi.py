@@ -2,6 +2,17 @@ import requests
 import pandas as pd
 from pandas import json_normalize
 
+def fetch_star_wars_data(nmb):
+    api_url = f"https://swapi.dev/api/planets/{nmb}"
+    response = requests.get(api_url)
+
+def fetch_planet_data():
+    api_url = "https://swapi.dev/api/planets/"
+    response = requests.get(api_url)
+
+def display_planet_dataframe():
+    planet_data = fetch_planet_data()
+
 # fetch all the starships in the api based on the url in parameters
 def get_starships(url):
     names = []
