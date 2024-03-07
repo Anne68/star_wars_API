@@ -3,8 +3,8 @@ import pandas as pd
 from pandas import json_normalize
 
 #récupère une planète
-def fetch_star_wars_data(nmb):
-    api_url = f"https://swapi.dev/api/planets/{nmb}"
+def fetch_planet(nmb):
+    api_url = f"https://swapi.tech/api/planets/{nmb}"
     response = requests.get(api_url)
     if response.status_code == 200:
         planet = response.json()
@@ -13,7 +13,8 @@ def fetch_star_wars_data(nmb):
         print("Impossible de récupérer les informations car la requête a échoué.")
         return None
 
-def fetch_all_planets(api_url="https://swapi.dev/api/planets/", planets=None):
+#recupère toutes les planètes
+def fetch_all_planets(api_url="https://swapi.tech/api/planets/", planets=None):
     if planets is None:
         planets = []
     response = requests.get(api_url)
@@ -28,6 +29,7 @@ def fetch_all_planets(api_url="https://swapi.dev/api/planets/", planets=None):
         print("Impossible de récupérer les informations car la requête a échoué.")
         return planets
 
+#créer le dataframe pour afficher les planètes en fonction de leur diamètre
 def display_planet_dataframe():
     planets = fetch_all_planets()
     planet_df = pd.DataFrame(planets)
@@ -55,7 +57,7 @@ def create_starships_df(names):
 
 # fetch the starship defined with the id in parameters
 def get_starship(nombre):
-    url = f'https://swapi.dev/api/starships/{nombre}/'
+    url = f'https://swapi.tech/api/starships/{nombre}/'
     response = requests.get(url)
     if response.status_code == 200:
         starships = response.json()
@@ -85,7 +87,7 @@ def create_names_df(names):
 
 #fonction qui récupère un personnage suivant l'identifiant qu'on spécifie
 def get_character(nombre):
-    url = f'https://swapi.dev/api/people/{nombre}'
+    url = f'https://swapi.tech/api/people/{nombre}'
     response = requests.get(url)
     if response.status_code == 200: #200 équivaut à une requête réussie
             print(response)
