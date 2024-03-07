@@ -6,13 +6,34 @@ from pandas import json_normalize
 def fetch_star_wars_data(nmb):
     api_url = f"https://swapi.dev/api/planets/{nmb}"
     response = requests.get(api_url)
+    if response.status_code == 200:
+        planet = response.json()
+        return planet
+    else:
+        print("Impossible de récupérer les informations car la requête a échoué.")
+        return None
 
-def fetch_planet_data():
-    api_url = "https://swapi.dev/api/planets/"
+def fetch_all_planets(api_url="https://swapi.dev/api/planets/", planets=None):
+    if planets is None:
+        planets = []
     response = requests.get(api_url)
+    if response.status_code == 200:
+        data = response.json()
+        planets.extend(data['results'])
+        if data['next']:
+            return fetch_all_planets(data['next'], planets)
+        else:
+            return planets
+    else:
+        print("Impossible de récupérer les informations car la requête a échoué.")
+        return planets
 
 def display_planet_dataframe():
-    planet_data = fetch_planet_data()
+    planets = fetch_all_planets()
+    planet_df = pd.DataFrame(planets)
+    planet_df['diameter'] = pd.to_numeric(planet_df['diameter'], errors='coerce').fillna(-1)
+    sorted_planet_df = planet_df.sort_values(by='diameter', ascending=False)
+    print(sorted_planet_df[['name', 'diameter']])
 
 # fetch all the starships in the api based on the url in parameters
 def get_starships(url):
@@ -45,7 +66,7 @@ def get_starship(nombre):
 
 
 #fonction qui récupère tout les noms des personnages de l'API
-def get_character(url):
+def get_characters(url):
     names = []
     while url: #tant que l'url est valide et non null on reste dans le while
         response = requests.get(url)
@@ -63,7 +84,7 @@ def create_names_df(names):
     return pd.DataFrame(names, columns=['Name'])
 
 #fonction qui récupère un personnage suivant l'identifiant qu'on spécifie
-def character(nombre):
+def get_character(nombre):
     url = f'https://swapi.dev/api/people/{nombre}'
     response = requests.get(url)
     if response.status_code == 200: #200 équivaut à une requête réussie
